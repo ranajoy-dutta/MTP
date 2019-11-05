@@ -1,0 +1,133 @@
+{% extends "fac_dashbase.html" %}
+{% block title %}Admin{% endblock %}
+{% block page_content %}
+<button type="button" class="btn btn-dark pull-right btn-lg m-2" data-toggle="modal" data-target="#myModal">Add Faculty</button>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h4 class="modal-title">Add Faculty</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+        <form action="create_faculty" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" name="email" class="form-control" id="email">
+          </div>
+          <div class="form-group">
+            <label for="fname">First Name:</label>
+            <input type="text" name="fname" class="form-control" id="fname">
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name:</label>
+            <input type="text" name="lname" class="form-control" id="lname">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="text" name="password" class="form-control" id="pwd">
+          </div>
+          <label for="adminright">Grant Admin Rights ?</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+              <input type="radio" name="adminright" value="1" aria-label="Radio button for following text input">
+              </div>
+            </div>
+            <input type="text" class="form-control" value="Yes" readonly aria-label="Text input with radio button">
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+              <input type="radio" name="adminright" id="adminright" value="0" checked aria-label="Radio button for following text input">
+              </div>
+            </div>
+            <input type="text" class="form-control" value="No" readonly aria-label="Text input with radio button">
+          </div>
+          <br>
+          <button type="submit" class="btn btn-primary btn-default">Submit</button>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--messages-->
+{% if message_code == 1 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-success alert-dismissible fade show" role="alert">
+       Data Successfully Stored
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+<!--<div class="bg-success alert alert-Success">Data Successfully Stored</div>-->
+{% elif message_code == 2 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-danger alert-dismissible fade show" role="alert">
+       Last Transaction Failed
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+{% elif message_code == 3 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-danger alert-dismissible fade show" role="alert">
+       Last Transaction Failed! Email already exists.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+{% endif %}
+
+<!--table for list of students-->
+    {% if faculty_list.count > 0 %}
+    <div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Admin Rights</th>
+            <th>Image</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for faculty in faculty_list %}
+            <tr>
+                <td>{{ faculty.fname }}</td>
+                <td>{{ faculty.lname }}</td>
+                <td>{{ faculty.email }}</td>
+                <td>{{ faculty.password }}</td>
+                {% if faculty.admin == '1' %}
+                <td> Yes </td>
+                {% else %}
+                <td> No </td>
+                {% endif %}
+                <td>{{ faculty.image }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    {% else  %}
+        <div class="breadcrumb">No Faculty records found</div>
+    {% endif %}
+
+{% endblock %}

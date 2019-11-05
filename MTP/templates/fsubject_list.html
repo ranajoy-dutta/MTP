@@ -1,0 +1,102 @@
+{% extends "fac_dashbase.html" %}
+{% block title %}Subject List{% endblock %}
+{% block page_content %}
+<button type="button" class="btn btn-dark pull-right btn-lg m-2" data-toggle="modal" data-target="#myModal">Add Subject</button>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h4 class="modal-title">Add Subject</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+        <form action="create_subject" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Subject Name:</label>
+            <input type="name" name="name" class="form-control" id="name">
+          </div>
+            <div class="form-group">
+              <label for="cid">Course:</label>
+                <select id="cid" name="course_id" class="form-control"  required>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    {% for course in course_list %}
+                    <option>{{ course.co_name }}</option>
+                    {% endfor %}
+                </select>
+<!--              </div>-->
+            </div>
+          <button type="submit" class="btn btn-primary btn-default">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--messages-->
+{% if message_code == 1 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-success alert-dismissible fade show" role="alert">
+       Transaction Successful
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+<!--<div class="bg-success alert alert-Success">Data Successfully Stored</div>-->
+{% elif message_code == 2 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-danger alert-dismissible fade show" role="alert">
+       Last Transaction Failed
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+{% elif message_code == 3 %}
+<div class="row m-auto">
+    <div class="col-10 alert alert-danger alert-dismissible fade show" role="alert">
+       Last Transaction Failed! Email already exists.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+{% endif %}
+<!--table for list of students-->
+    {% if subject_list.count > 0 %}
+    <div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>Subject Name</th>
+            <th>Course Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject in subject_list %}
+            <tr>
+                <td>{{ subject.sub_name }}</td>
+                <td>{{ subject.co_name }}
+                    <button class="fa-pull-right btn btn-sm btn-danger">
+                        X
+                    </button>
+                </td>
+
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+{% endblock %}
